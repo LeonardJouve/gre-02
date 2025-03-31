@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heig.gre.gui.MainViewController">
+  <children>
+      <MenuBar maxHeight="0.0" maxWidth="0.0" minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="0.0" visible="false">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Ouvrir">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Sauvegarder">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <SplitPane dividerPositions="0.25" prefHeight="861.0" prefWidth="800.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane maxWidth="200.0" minWidth="150.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="53.0" layoutY="279.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TitledPane fx:id="generationGroup" animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity" text="Génération">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
+                                       <children>
+                                          <VBox layoutX="19.6" layoutY="19.6" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Taille de la grille">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <Slider fx:id="gridSizeSlider" blockIncrement="1.0" max="250.0" min="5.0" minorTickCount="1" showTickLabels="true" value="100.0">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </Slider>
+                                                <CheckBox fx:id="animateGen" mnemonicParsing="false" text="Animer" />
+                                                <Button mnemonicParsing="false" onAction="#onGenerate" prefHeight="25.0" prefWidth="179.0" text="Générer" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" top="10.0" />
+                                 </VBox.margin>
+                              </TitledPane>
+                              <TitledPane fx:id="tuneGroupAll" animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity" text="Modification">
+                                 <content>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0">
+                                       <children>
+                                          <VBox layoutX="19.6" layoutY="19.6" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <AnchorPane fx:id="tuneGroup" disable="true" prefHeight="200.0" prefWidth="200.0">
+                                                   <children>
+                                                      <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <Label text="Murs supprimés [‰]">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <Slider fx:id="wallRemovalSlider" blockIncrement="1.0" max="150.0" min="1.0" minorTickCount="1" showTickLabels="true" value="20.0">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                            </Slider>
+                                                            <Button mnemonicParsing="false" onAction="#onRemoveWalls" prefHeight="25.0" prefWidth="179.0" text="Supprimer" />
+                                                            <Separator prefWidth="200.0" />
+                                                            <Label minWidth="70.0" text="Relief" />
+                                                            <HBox>
+                                                               <children>
+                                                                  <Label minWidth="70.0" text="Densité" />
+                                                                  <Slider fx:id="reliefDensitySlider" blockIncrement="1.0" max="10.0" min="1.0" minorTickCount="1" value="5.0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox>
+                                                               <children>
+                                                                  <Label minWidth="70.0" text="Rayon" />
+                                                                  <Slider fx:id="reliefRadiusSlider" blockIncrement="1.0" max="60.0" min="20.0" minorTickCount="1" value="50.0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <Button mnemonicParsing="false" onAction="#onGenerateRelief" prefHeight="25.0" prefWidth="179.0" text="Générer" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                                <Separator prefWidth="200.0" />
+                                                <CheckBox fx:id="autoTune" mnemonicParsing="false" selected="true" text="Auto">
+                                                   <tooltip>
+                                                      <Tooltip text="La modification est automatiquement appliquée après la génération." />
+                                                   </tooltip>
+                                                </CheckBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </TitledPane>
+                              <TitledPane fx:id="solveGroup" animated="false" collapsible="false" disable="true" maxHeight="-Infinity" minHeight="-Infinity" text="Résolution">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
+                                       <children>
+                                          <VBox layoutX="19.6" layoutY="19.6" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Sélection des sommets">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                   <tooltip>
+                                                      <Tooltip text="Sélection du sommet qui sera placé lors d'un clic sur le canevas." />
+                                                   </tooltip>
+                                                </Label>
+                                                <RadioButton mnemonicParsing="false" onAction="#onSrcTool" selected="true" text="Source">
+                                                   <toggleGroup>
+                                                      <ToggleGroup fx:id="vertexSelection" />
+                                                   </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton mnemonicParsing="false" onAction="#onDstTool" text="Destination" toggleGroup="$vertexSelection" />
+                                                <Separator prefWidth="200.0" />
+                                                <Label text="Algorithme" />
+                                                <ChoiceBox fx:id="solverChoiceBox" prefWidth="179.0" />
+                                                <Button mnemonicParsing="false" onAction="#onSolve" prefHeight="25.0" prefWidth="179.0" text="Résoudre" />
+                                                <Separator prefWidth="200.0" />
+                                                <GridPane alignment="CENTER" hgap="10.0" prefWidth="175.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="118.0" minWidth="10.0" prefWidth="110.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="45.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label text="Longeur" />
+                                                      <Label fx:id="resultLength" text="0" GridPane.columnIndex="1" />
+                                                      <Label text="Sommets traités" GridPane.rowIndex="1" />
+                                                      <Label fx:id="resultPerformance" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                   </children>
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                </GridPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                                 <VBox.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </TitledPane>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                              <TitledPane animated="false" collapsible="false" maxHeight="-Infinity" minHeight="-Infinity" text="Contrôle">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0">
+                                       <children>
+                                          <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Vitesse" />
+                                                <Slider fx:id="delaySlider" max="1000.0" prefHeight="14.0" prefWidth="140.0" value="300.0" />
+                                                <GridPane fx:id="playPauseGroup" alignment="CENTER" disable="true" hgap="10.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Button fx:id="pauseBtn" layoutX="13.0" layoutY="89.0" mnemonicParsing="false" onAction="#onPlayPause" text="Pause" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Button fx:id="stopBtn" layoutX="-1.0" layoutY="87.0" mnemonicParsing="false" onAction="#onStop" text="Stop" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                </GridPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="5.0" right="5.0" />
+                                 </VBox.margin>
+                              </TitledPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+                  <TilePane fx:id="canvasArea" alignment="CENTER" minHeight="200.0" minWidth="200.0" prefHeight="892.0" prefWidth="631.0">
+                     <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Canvas fx:id="canvas" height="200.0" width="200.0" />
+                              <Canvas fx:id="overlay" height="200.0" onMouseClicked="#onSelectVertex" width="200.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </TilePane>
+              </items>
+            </SplitPane>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
