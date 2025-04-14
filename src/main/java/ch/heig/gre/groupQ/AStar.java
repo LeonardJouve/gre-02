@@ -63,6 +63,12 @@ public final class AStar implements GridMazeSolver {
   static int euclidianNorm(int source, int destination, GridGraph2D grid) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
+    return Math.floor();
+  }
+
+  static int manhattan(int source, int destination, GridGraph2D grid) {
+    Coordinate sourceCoord = getCoordinate(grid, source);
+    Coordinate destinationCoord = getCoordinate(grid, destination);
     return Math.abs(sourceCoord.x() - destinationCoord.x()) + Math.abs(sourceCoord.y() - destinationCoord.y());
   }
 
