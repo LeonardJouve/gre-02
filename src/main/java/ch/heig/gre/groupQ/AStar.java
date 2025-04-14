@@ -32,7 +32,6 @@ public final class AStar implements GridMazeSolver {
                       int source,
                       int destination,
                       VertexLabelling<Boolean> processed) {
-
     throw new UnsupportedOperationException("Not implemented yet");
   }
 }
