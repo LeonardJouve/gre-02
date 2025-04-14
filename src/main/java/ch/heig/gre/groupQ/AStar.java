@@ -1,5 +1,6 @@
 package ch.heig.gre.groupQ;
 
+import ch.heig.gre.graph.Edge;
 import ch.heig.gre.graph.GridGraph2D;
 import ch.heig.gre.graph.PositiveWeightFunction;
 import ch.heig.gre.graph.VertexLabelling;
@@ -12,7 +13,7 @@ import java.util.*;
 public final class AStar implements GridMazeSolver {
   public record DistPre(int cost, Integer pred) {}
   public record VertexPriority(int vertex, int prio) {}
-
+  public record Coordinate(int x, int y){}
   interface Implementation {
     int implementation(int source, int destination, GridGraph2D grid);
   }
@@ -22,15 +23,15 @@ public final class AStar implements GridMazeSolver {
     INFINITY_NORM(AStar::infinityNorm),
     EUCLIDEAN_NORM(AStar::euclidianNorm),
     MANHATTAN(AStar::manhattan),
-    K_MANHATTAN(AStar::kManhattan),;
+    K_MANHATTAN(AStar::kManhattanHeur),;
 
     private final Implementation implementation;
     Heuristic(Implementation implementation) {
       this.implementation = implementation;
     }
 
-    Implementation getImplementation() {
-      return implementation;
+    int get (int source, int destination, GridGraph2D grid) {
+      return implementation.implementation(source, destination, grid);
     }
   }
 
@@ -54,19 +55,24 @@ public final class AStar implements GridMazeSolver {
   }
 
   static int infinityNorm(int source, int destination, GridGraph2D grid) {
+    //grid.neighbors(source);
+
     throw new UnsupportedOperationException();
   }
 
   static int euclidianNorm(int source, int destination, GridGraph2D grid) {
-    throw new UnsupportedOperationException();
+    Coordinate sourceCoord = getCoordinate(grid, source);
+    Coordinate destinationCoord = getCoordinate(grid, destination);
+    return Math.abs(sourceCoord.x() - destinationCoord.x()) + Math.abs(sourceCoord.y() - destinationCoord.y());
   }
 
-  static int manhattan(int source, int destination, GridGraph2D grid) {
-    throw new UnsupportedOperationException();
+  static int kManhattanHeur(int source, int destination, GridGraph2D grid) {
+    return kManhattan * manhattan(source, destination, grid);
   }
 
-  static int kManhattan(int source, int destination, GridGraph2D grid) {
-    throw new UnsupportedOperationException();
+  private static Coordinate getCoordinate(GridGraph2D grid, int vertex) {
+    int width = grid.width();
+    return new Coordinate(vertex % width, vertex / width);
   }
 
   @Override
@@ -75,8 +81,8 @@ public final class AStar implements GridMazeSolver {
                       int source,
                       int destination,
                       VertexLabelling<Boolean> processed) {
-    // TODO vertex labelling
     int treated = 0;
+
     PriorityQueue<VertexPriority> prioQueue = new PriorityQueue<>(1, Comparator.comparingInt(VertexPriority::prio));
 
     // Initialiser les distPre à maxValue, null sauf pour la source
@@ -84,21 +90,23 @@ public final class AStar implements GridMazeSolver {
     // ArrayList<DistPre> distancesToDest = new ArrayList<>();
 
     // On prend des maps parce que le but est justement de ne pas traiter tous les sommets
+    // TODO: au final on prend tout les sommets
     Map<Integer, DistPre> distancesToDest = new HashMap<>();
-
-    Map<Integer, Integer> heuristicResults = new HashMap<>();
-
     for (int i = 0 ; i < grid.nbVertices(); i++) {
       distancesToDest.put(i, new DistPre(Integer.MAX_VALUE, null));
     }
     distancesToDest.put(source, new DistPre(0, null));
 
-    heuristicResults.put(source, this.heuristic.getImplementation().implementation(source, destination, grid));
+    Map<Integer, Integer> heuristicResults = new HashMap<>();
+    heuristicResults.put(source, this.heuristic.get(source, destination, grid));
+
     prioQueue.add(new VertexPriority(source, heuristicResults.get(source)));
 
     while (!prioQueue.isEmpty()) {
       ++treated;
-      Integer currentVertex = prioQueue.poll().vertex();
+      int currentVertex = prioQueue.poll().vertex();
+      processed.setLabel(currentVertex, true);
+
       if (currentVertex == destination) {
         List<Integer> path = new LinkedList<>();
         while (currentVertex != source) {
@@ -121,7 +129,7 @@ public final class AStar implements GridMazeSolver {
         if (deltaJ > newDeltaJ){
           // ATTENTION OVERFLOW ?
           if (deltaJ == Integer.MAX_VALUE) {
-            heuristicResults.put(neighborJ, this.heuristic.getImplementation().implementation(neighborJ, destination, grid));
+            heuristicResults.put(neighborJ, this.heuristic.get(neighborJ, destination, grid));
           }
           distancesToDest.put(neighborJ, new DistPre(newDeltaJ, currentVertex));
 
