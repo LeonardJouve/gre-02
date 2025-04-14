@@ -14,25 +14,16 @@ public final class AStar implements GridMazeSolver {
   public record DistPre(int cost, Integer pred) {}
   public record VertexPriority(int vertex, int prio) {}
   public record Coordinate(int x, int y){}
-  interface Implementation {
-    int implementation(int source, int destination, GridGraph2D grid);
+  interface HeuristicFunction {
+    int get(int source, int destination, GridGraph2D grid, int minWeight);
   }
 
   public enum Heuristic {
-    DIJKSTRA(AStar::djikstra),
-    INFINITY_NORM(AStar::infinityNorm),
-    EUCLIDEAN_NORM(AStar::euclidianNorm),
-    MANHATTAN(AStar::manhattan),
-    K_MANHATTAN(AStar::kManhattanHeur),;
-
-    private final Implementation implementation;
-    Heuristic(Implementation implementation) {
-      this.implementation = implementation;
-    }
-
-    int get (int source, int destination, GridGraph2D grid) {
-      return implementation.implementation(source, destination, grid);
-    }
+    DIJKSTRA,
+    INFINITY_NORM,
+    EUCLIDEAN_NORM,
+    MANHATTAN,
+    K_MANHATTAN;
   }
 
   /** Heuristique utilisée pour l'algorithme A*. */
@@ -41,6 +32,8 @@ public final class AStar implements GridMazeSolver {
   /** Facteur multiplicatif de la distance de Manhattan utilisé par l'heuristique K-Manhattan. */
   private final int kManhattan;
 
+  private final HeuristicFunction heuristicFunction;
+
   public AStar(Heuristic heuristic) {
     this(heuristic, 1);
   }
@@ -48,32 +41,60 @@ public final class AStar implements GridMazeSolver {
   public AStar(Heuristic heuristic, int kManhattan) {
     this.heuristic = heuristic;
     this.kManhattan = kManhattan;
+
+    switch (this.heuristic) {
+    case DIJKSTRA:
+      this.heuristicFunction = this::djikstra;
+      break;
+    case INFINITY_NORM:
+      this.heuristicFunction = this::infinityNorm;
+      break;
+    case EUCLIDEAN_NORM:
+      this.heuristicFunction = this::euclidianNorm;
+      break;
+    case MANHATTAN:
+      this.heuristicFunction = this::manhattan;
+      break;
+    case K_MANHATTAN:
+      this.heuristicFunction = this::kManhattanHeur;
+      break;
+    default:
+      this.heuristicFunction = this::djikstra;
+    }
+
   }
 
-  static int djikstra(int source, int destination, GridGraph2D grid) {
+  int djikstra(int source, int destination, GridGraph2D grid, int minWeight) {
     return 0;
   }
 
-  static int infinityNorm(int source, int destination, GridGraph2D grid) {
-    //grid.neighbors(source);
-
-    throw new UnsupportedOperationException();
-  }
-
-  static int euclidianNorm(int source, int destination, GridGraph2D grid) {
+  int infinityNorm(int source, int destination, GridGraph2D grid, int minWeight) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
-    return Math.floor();
+    int deltaX = Math.abs(destinationCoord.x() - sourceCoord.x());
+    int deltaY = Math.abs(destinationCoord.y() - sourceCoord.y());
+
+    return minWeight * Math.max(deltaX, deltaY);
   }
 
-  static int manhattan(int source, int destination, GridGraph2D grid) {
+  int euclidianNorm(int source, int destination, GridGraph2D grid, int minWeight) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
-    return Math.abs(sourceCoord.x() - destinationCoord.x()) + Math.abs(sourceCoord.y() - destinationCoord.y());
+    int x = destinationCoord.x() - sourceCoord.x();
+    int y = destinationCoord.y() - sourceCoord.y();
+
+    return minWeight * (int) Math.floor(Math.hypot(x, y));
   }
 
-  static int kManhattanHeur(int source, int destination, GridGraph2D grid) {
-    return kManhattan * manhattan(source, destination, grid);
+  int manhattan(int source, int destination, GridGraph2D grid, int minWeight) {
+    Coordinate sourceCoord = getCoordinate(grid, source);
+    Coordinate destinationCoord = getCoordinate(grid, destination);
+
+    return minWeight * Math.abs(sourceCoord.x() - destinationCoord.x()) + Math.abs(sourceCoord.y() - destinationCoord.y());
+  }
+
+  int kManhattanHeur(int source, int destination, GridGraph2D grid, int minWeight) {
+    return minWeight * kManhattan * manhattan(source, destination, grid, minWeight);
   }
 
   private static Coordinate getCoordinate(GridGraph2D grid, int vertex) {
@@ -104,7 +125,7 @@ public final class AStar implements GridMazeSolver {
     distancesToDest.put(source, new DistPre(0, null));
 
     Map<Integer, Integer> heuristicResults = new HashMap<>();
-    heuristicResults.put(source, this.heuristic.get(source, destination, grid));
+    heuristicResults.put(source, this.heuristicFunction.get(source, destination, grid, weights.minWeight()));
 
     prioQueue.add(new VertexPriority(source, heuristicResults.get(source)));
 
@@ -135,7 +156,7 @@ public final class AStar implements GridMazeSolver {
         if (deltaJ > newDeltaJ){
           // ATTENTION OVERFLOW ?
           if (deltaJ == Integer.MAX_VALUE) {
-            heuristicResults.put(neighborJ, this.heuristic.get(neighborJ, destination, grid));
+            heuristicResults.put(neighborJ, this.heuristicFunction.get(neighborJ, destination, grid, weights.minWeight()));
           }
           distancesToDest.put(neighborJ, new DistPre(newDeltaJ, currentVertex));
 
