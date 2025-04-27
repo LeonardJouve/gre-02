@@ -86,9 +86,9 @@ public final class Experiment {
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
       for (int i = 0; i < headers.length; i++) {
         if (i > 0) {
-          printWriter.print(" ; ");
+          printWriter.print(",");
         }
-        printWriter.print(headers[i]);
+        printWriter.print("\"" + headers[i] + "\"");
       }
       printWriter.print('\n');
     } catch (IOException e) {
@@ -181,7 +181,7 @@ public final class Experiment {
         double averageTreatmentPercentageDecrease = (djikstraAverageTreatment - averageTreatment) / (djikstraAverageTreatment / 100);
         System.out.printf("Diminution en pourcentage du nombre moyen de sommets traités par rapport à Djikstra: %.2f\n", averageTreatmentPercentageDecrease);
 
-        ajouterLigneCsv("stats.csv", String.format("%s;%s;%.2f;%.2f;%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
+        ajouterLigneCsv("stats.csv", String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
       }
 
       System.out.println("\nRésultats détaillés K-Manhattan:");
@@ -241,7 +241,7 @@ public final class Experiment {
         double averageTreatmentsGain = treatmentsPercentageGain / djikstraResults.size();
         System.out.printf("Gain moyen: %.2f\n", averageTreatmentsGain);
 
-        ajouterLigneCsv("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
+        ajouterLigneCsv("k_manhattan_stats.csv", String.format("\"%s\",%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f", p.description(), k,
                 optimalResultsPercentage, minErrorTreatments, maxErrorTreatments, errorMeanTreatments, minErrorLength, maxErrorLength, errorMeanLength, averageTreatmentsGain));
       }
     }
