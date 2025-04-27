@@ -72,15 +72,29 @@ public final class Experiment {
    */
   record Params(String description, double[] parameters) {}
 
-  private static <T> double getAverage(List<T> values, Function<T, Integer> predicate) {
+
+  /**
+   * Custom function.
+   * Computes the average of a list of values.
+   * @param values values to computes the average on.
+   * @param extract function to extract an integer value from T
+   * @return the computed output
+   * @param <T> generic type of the values the average will be computed on
+   */
+  private static <T> double getAverage(List<T> values, Function<T, Integer> extract) {
     int sum = 0;
     for (T value : values) {
-      sum += predicate.apply(value);
+      sum += extract.apply(value);
     }
 
     return (double) sum / values.size();
   }
 
+  /**
+   * Writes headers in a csv file
+   * @param filename file name of the file to write in.
+   * @param headers every header to write in the file.
+   */
   public static void writeCsvHeaders(String filename, String... headers) {
     try (FileWriter fileWriter = new FileWriter(filename, true);
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
@@ -96,7 +110,12 @@ public final class Experiment {
     }
   }
 
-  public static void ajouterLigneCsv(String filename, String line) {
+  /**
+   * Add a csv line to a csv file.
+   * @param filename the name of the file.
+   * @param line the already formatted line as a string.
+   */
+  public static void addCsvLine(String filename, String line) {
     try (FileWriter fileWriter = new FileWriter(filename, true);
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
       printWriter.println(line);
@@ -106,23 +125,29 @@ public final class Experiment {
   }
 
   public static void main(String[] args) {
-    // TODO
     MazeGenerator mazeGenerator = new DfsGenerator();
-    RandomGenerator randomGenerator = new Random();
+    Random randomGenerator = new Random();
+
+    // Setting a seed, so that it always give the same output
+    randomGenerator.setSeed(2012);
 
     try {
+      // Remove and create a csv to save results
       Files.deleteIfExists(Paths.get("stats.csv"));
       writeCsvHeaders("stats.csv", "Experiment name", "Heuristic", "Average length", "Average treatment", "Average Treatment Percentage Decrease");
 
+      // Remove and create a csv to save detailed k-manhattan results
       Files.deleteIfExists(Paths.get("k_manhattan_stats.csv"));
       writeCsvHeaders("k_manhattan_stats.csv", "Experiment name", "Kvalue", "Optimal solution percentage", "Min error treatments", "Max error treatments", "Mean error treatments", "Min error length", "Max error length", "Mean error length", "Gain moyen");
     } catch (IOException e) {
       e.printStackTrace();
     }
 
+    // Loop on each experiment
     for (Params p : PARAMS) {
-      System.out.println("\n\n\n NOUVELLE EXPERIENCE : " + p.description + "\n");
+      System.out.println("\n\n\nNOUVELLE EXPERIENCE : " + p.description + "\n");
 
+      // Initialize the results array for each heuristic except k-manhattan
       ArrayList<LinkedList<GridMazeSolver.Result>> results = new ArrayList<>();
       for (int i = 0; i < AStar.Heuristic.values().length - 1; ++i) {
         results.add(new LinkedList<>());
@@ -130,29 +155,40 @@ public final class Experiment {
 
       Map<Integer, LinkedList<GridMazeSolver.Result>> kManhattanResults = new HashMap<>();
 
+      // Loop N times to get a result sample
       for (int i = 0; i < N; ++i) {
         System.out.println("N = " + i + ":");
 
+        // Generate a grid
         GenerationResult generationResult = generateGrid(mazeGenerator, p.parameters(), randomGenerator);
 
+        // Loop on each heuristic
         for (AStar.Heuristic heuristic : AStar.Heuristic.values()) {
           if (heuristic == AStar.Heuristic.K_MANHATTAN) {
+            // Loop on different K values for k-manhattan
             for (int k = 2 ; k <= 8; ++k) {
+              // Create an AStar maze solver instance with specific K
               AStar aStar = new AStar(heuristic, k);
 
               GridMazeSolver.Result result = aStar.solve(generationResult.maze(), generationResult.weights(), SRC, DST, new BoolVertexLabelling(TOPOLOGY.nbVertices()));
 
+              // Insert K if the current k is not in the map, add it. Doing this here prevents us from adding a loop at the beginning
               if (!kManhattanResults.containsKey(k)) {
                 kManhattanResults.put(k, new LinkedList<>());
               }
+              // Store results
               kManhattanResults.get(k).add(result);
 
               //System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
             }
           } else {
+            // Creating a new AStar object
             AStar aStar = new AStar(heuristic);
 
+            // Solving the given configuration
             GridMazeSolver.Result result = aStar.solve(generationResult.maze(), generationResult.weights(), SRC, DST, new BoolVertexLabelling(TOPOLOGY.nbVertices()));
+
+            // Store results
             results.get(heuristic.ordinal()).add(result);
 
             //System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
@@ -165,6 +201,7 @@ public final class Experiment {
       List<GridMazeSolver.Result> djikstraResults = results.get(AStar.Heuristic.DIJKSTRA.ordinal());
       double djikstraAverageTreatment = getAverage(djikstraResults, GridMazeSolver.Result::treatments);
 
+      // Loop on heuristic results
       for (int i = 0; i < results.size(); ++i) {
         AStar.Heuristic heuristic = AStar.Heuristic.values()[i];
         System.out.println(heuristic.name() + ":");
@@ -177,20 +214,24 @@ public final class Experiment {
         double averageTreatment = getAverage(heuristicResults, GridMazeSolver.Result::treatments);
         System.out.printf("Nombre moyen de sommets traités: %.2f\n", averageTreatment);
 
-        // par rapport dijkstra
+        // Computing the treatment percentage decrease compared with Dijkstra
         double averageTreatmentPercentageDecrease = (djikstraAverageTreatment - averageTreatment) / (djikstraAverageTreatment / 100);
         System.out.printf("Diminution en pourcentage du nombre moyen de sommets traités par rapport à Djikstra: %.2f\n", averageTreatmentPercentageDecrease);
 
-        ajouterLigneCsv("stats.csv", String.format("%s;%s;%.2f;%.2f;%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
+        // Adding the global results of this heuristic in the csv file.
+        addCsvLine("stats.csv", String.format("%s;%s;%.2f;%.2f;%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
       }
 
       System.out.println("\nRésultats détaillés K-Manhattan:");
 
+      // Loop on K values
       for (Integer k : kManhattanResults.keySet()) {
         System.out.println("K = " + k + ":");
 
         List<GridMazeSolver.Result> kKManhattanResults = kManhattanResults.get(k);
-
+        // Since we were not totally confident on whether we were supposed to compute the minimum, mean, and maximum relative
+        // error according to the number of treated vertices, or to the length of the path to destination, we did it
+        // for both.
         double minErrorTreatments = Double.MAX_VALUE;
         double maxErrorTreatments = Double.MIN_VALUE;
         double errorSumTreatments = 0;
@@ -199,6 +240,8 @@ public final class Experiment {
         double errorSumLength = 0;
         double treatmentsPercentageGain = 0;
         int optimalResults = 0;
+
+        // Loop over each result and compare it to the Dijkstra equivalent
         for (int i = 0; i < kKManhattanResults.size(); ++i) {
           GridMazeSolver.Result kKManhattanResult = kKManhattanResults.get(i);
           GridMazeSolver.Result djikstraResult = djikstraResults.get(i);
@@ -241,7 +284,7 @@ public final class Experiment {
         double averageTreatmentsGain = treatmentsPercentageGain / djikstraResults.size();
         System.out.printf("Gain moyen: %.2f\n", averageTreatmentsGain);
 
-        ajouterLigneCsv("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
+        addCsvLine("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
                 optimalResultsPercentage, minErrorTreatments, maxErrorTreatments, errorMeanTreatments, minErrorLength, maxErrorLength, errorMeanLength, averageTreatmentsGain));
       }
     }

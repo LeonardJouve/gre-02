@@ -1,5 +1,6 @@
 package ch.heig.gre.groupQ;
 
+
 import ch.heig.gre.graph.GridGraph2D;
 import ch.heig.gre.graph.PositiveWeightFunction;
 import ch.heig.gre.graph.VertexLabelling;
@@ -19,6 +20,14 @@ public final class AStar implements GridMazeSolver {
 
   // Interface used to generalize heuristic implementations usage
   interface HeuristicFunction {
+    /**
+     * Computes a heuristic distance according to the chosen heuristic function at creation of the class
+     * @param source source vertex
+     * @param destination destination vertex
+     * @param grid grid on which to compute the distance
+     * @param minWeight smallest weight of the graph
+     * @return the distance computed
+     */
     int get(int source, int destination, GridGraph2D grid, int minWeight);
   }
 
@@ -67,11 +76,13 @@ public final class AStar implements GridMazeSolver {
 
   }
 
-  int djikstra(int source, int destination, GridGraph2D grid, int minWeight) {
+  // Implementation of the various heuristic functions
+
+  private int djikstra(int source, int destination, GridGraph2D grid, int minWeight) {
     return 0;
   }
 
-  int infinityNorm(int source, int destination, GridGraph2D grid, int minWeight) {
+  private int infinityNorm(int source, int destination, GridGraph2D grid, int minWeight) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
     int deltaX = Math.abs(destinationCoord.x() - sourceCoord.x());
@@ -80,7 +91,7 @@ public final class AStar implements GridMazeSolver {
     return minWeight * Math.max(deltaX, deltaY);
   }
 
-  int euclidianNorm(int source, int destination, GridGraph2D grid, int minWeight) {
+  private int euclidianNorm(int source, int destination, GridGraph2D grid, int minWeight) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
     int x = destinationCoord.x() - sourceCoord.x();
@@ -89,14 +100,14 @@ public final class AStar implements GridMazeSolver {
     return minWeight * (int) Math.floor(Math.hypot(x, y));
   }
 
-  int manhattan(int source, int destination, GridGraph2D grid, int minWeight) {
+  private int manhattan(int source, int destination, GridGraph2D grid, int minWeight) {
     Coordinate sourceCoord = getCoordinate(grid, source);
     Coordinate destinationCoord = getCoordinate(grid, destination);
 
     return minWeight * Math.abs(sourceCoord.x() - destinationCoord.x()) + Math.abs(sourceCoord.y() - destinationCoord.y());
   }
 
-  int kManhattanHeur(int source, int destination, GridGraph2D grid, int minWeight) {
+  private int kManhattanHeur(int source, int destination, GridGraph2D grid, int minWeight) {
     return kManhattan * manhattan(source, destination, grid, minWeight);
   }
 
