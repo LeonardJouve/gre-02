@@ -130,7 +130,6 @@ public final class AStar implements GridMazeSolver {
     prioQueue.add(new VertexPriority(source, heuristicResults.get(source)));
 
     while (!prioQueue.isEmpty()) {
-      ++treated;
       int currentVertex = prioQueue.poll().vertex();
       processed.setLabel(currentVertex, true);
 
@@ -144,6 +143,8 @@ public final class AStar implements GridMazeSolver {
 
         return new Result(path, path.size(), treated);
       }
+
+      ++treated;
 
       // prendre les successeurs
       List<Integer> neighbors = grid.neighbors(currentVertex);
@@ -166,6 +167,6 @@ public final class AStar implements GridMazeSolver {
       }
     }
 
-    return null;
+    return new Result(Collections.emptyList(), 0, 0);
   }
 }
