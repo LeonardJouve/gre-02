@@ -1,0 +1,43 @@
+Experiment name ; Kvalue ; Optimal solution percentage ; Min error treatments ; Max error treatments ; Mean error treatments ; Min error length ; Max error length ; Mean error length ; Gain moyen
+Relief très peu dense, labyrinthe très ouvert;2;3.00;-99.22;0.00;-94.52;0.00;22.42;9.11;94.52
+Relief très peu dense, labyrinthe très ouvert;3;0.00;-99.28;0.00;-98.00;5.06;43.05;21.16;98.00
+Relief très peu dense, labyrinthe très ouvert;4;0.00;-99.31;0.00;-98.56;4.94;56.17;27.42;98.56
+Relief très peu dense, labyrinthe très ouvert;5;0.00;-99.45;0.00;-98.81;6.58;60.08;30.89;98.81
+Relief très peu dense, labyrinthe très ouvert;6;0.00;-99.45;0.00;-98.93;8.60;64.38;31.88;98.93
+Relief très peu dense, labyrinthe très ouvert;7;0.00;-99.45;0.00;-98.94;12.19;60.91;34.99;98.94
+Relief très peu dense, labyrinthe très ouvert;8;0.00;-99.45;0.00;-98.99;12.90;63.37;36.09;98.99
+Relief très peu dense, labyrinthe assez ouvert;2;19.00;-98.65;0.00;-90.82;0.00;16.99;3.78;90.82
+Relief très peu dense, labyrinthe assez ouvert;3;0.00;-99.17;0.00;-96.85;2.97;37.72;17.05;96.85
+Relief très peu dense, labyrinthe assez ouvert;4;0.00;-99.20;0.00;-97.93;6.27;53.44;25.11;97.93
+Relief très peu dense, labyrinthe assez ouvert;5;0.00;-99.29;0.00;-98.36;6.27;60.21;30.60;98.36
+Relief très peu dense, labyrinthe assez ouvert;6;0.00;-99.31;0.00;-98.50;7.06;63.67;32.68;98.50
+Relief très peu dense, labyrinthe assez ouvert;7;0.00;-99.31;0.00;-98.49;7.06;63.67;35.30;98.49
+Relief très peu dense, labyrinthe assez ouvert;8;0.00;-99.31;0.00;-98.58;10.98;79.54;36.62;98.58
+Relief très peu dense, labyrinthe peu ouvert;2;100.00;-68.64;0.00;-53.07;0.00;0.00;0.00;53.07
+Relief très peu dense, labyrinthe peu ouvert;3;97.00;-85.86;0.00;-66.21;0.00;0.61;0.01;66.21
+Relief très peu dense, labyrinthe peu ouvert;4;93.00;-92.53;0.00;-74.49;0.00;2.14;0.05;74.49
+Relief très peu dense, labyrinthe peu ouvert;5;81.00;-96.08;0.00;-78.94;0.00;7.91;0.41;78.94
+Relief très peu dense, labyrinthe peu ouvert;6;64.00;-96.18;0.00;-80.95;0.00;16.12;1.62;80.95
+Relief très peu dense, labyrinthe peu ouvert;7;38.00;-96.47;0.00;-83.92;0.00;31.48;4.18;83.92
+Relief très peu dense, labyrinthe peu ouvert;8;37.00;-96.40;0.00;-85.82;0.00;45.78;6.09;85.82
+Relief dense, labyrinthe moyennement ouvert;2;94.00;-75.07;0.00;-49.27;-0.51;1.25;0.03;49.27
+Relief dense, labyrinthe moyennement ouvert;3;82.00;-90.39;0.00;-60.45;-9.31;11.40;0.24;60.45
+Relief dense, labyrinthe moyennement ouvert;4;67.00;-93.78;0.00;-66.96;-24.32;21.87;0.84;66.96
+Relief dense, labyrinthe moyennement ouvert;5;56.00;-93.81;0.00;-70.72;-26.05;29.83;0.85;70.72
+Relief dense, labyrinthe moyennement ouvert;6;50.00;-95.12;4.28;-71.73;-26.05;36.19;1.03;71.73
+Relief dense, labyrinthe moyennement ouvert;7;35.00;-96.59;50.63;-71.49;-26.05;45.97;1.03;71.49
+Relief dense, labyrinthe moyennement ouvert;8;25.00;-96.49;50.70;-73.29;-39.20;44.01;0.49;73.29
+Relief très dense, labyrinthe moyennement ouvert;2;96.00;-51.15;0.00;-35.49;-0.39;0.42;0.01;35.49
+Relief très dense, labyrinthe moyennement ouvert;3;94.00;-76.30;0.00;-47.32;-3.00;0.42;-0.04;47.32
+Relief très dense, labyrinthe moyennement ouvert;4;92.00;-87.52;0.00;-55.88;-2.57;1.76;-0.01;55.88
+Relief très dense, labyrinthe moyennement ouvert;5;87.00;-90.27;0.00;-62.37;-31.04;5.32;-0.32;62.37
+Relief très dense, labyrinthe moyennement ouvert;6;81.00;-93.45;0.00;-67.82;-29.28;10.76;-0.49;67.82
+Relief très dense, labyrinthe moyennement ouvert;7;80.00;-94.00;0.00;-70.89;-38.65;12.37;-0.46;70.89
+Relief très dense, labyrinthe moyennement ouvert;8;72.00;-94.07;4.69;-72.16;-38.07;15.42;-0.45;72.16
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;2;97.00;-28.83;0.00;-15.53;0.00;2.67;0.04;15.53
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;3;96.00;-44.49;31.24;-20.86;0.00;2.67;0.05;20.86
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;4;96.00;-59.56;82.34;-25.09;0.00;2.67;0.05;25.09
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;5;95.00;-64.58;116.13;-28.56;0.00;5.16;0.11;28.56
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;6;95.00;-68.45;216.65;-30.76;0.00;5.16;0.11;30.76
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;7;92.00;-71.18;246.47;-33.35;0.00;15.51;0.29;33.35
+Relief très dense et fortement pondéré, labyrinthe moyennement ouvert;8;89.00;-74.25;282.38;-35.57;-2.58;15.51;0.40;35.57
