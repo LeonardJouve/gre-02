@@ -100,9 +100,9 @@ public final class Experiment {
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
       for (int i = 0; i < headers.length; i++) {
         if (i > 0) {
-          printWriter.print(" ; ");
+          printWriter.print(",");
         }
-        printWriter.print(headers[i]);
+        printWriter.print("\"" + headers[i] + "\"");
       }
       printWriter.print('\n');
     } catch (IOException e) {
@@ -179,7 +179,7 @@ public final class Experiment {
               // Store results
               kManhattanResults.get(k).add(result);
 
-              //System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
+              System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
             }
           } else {
             // Creating a new AStar object
@@ -191,7 +191,7 @@ public final class Experiment {
             // Store results
             results.get(heuristic.ordinal()).add(result);
 
-            //System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
+            System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
           }
         }
       }
@@ -219,7 +219,8 @@ public final class Experiment {
         System.out.printf("Diminution en pourcentage du nombre moyen de sommets traités par rapport à Djikstra: %.2f\n", averageTreatmentPercentageDecrease);
 
         // Adding the global results of this heuristic in the csv file.
-        addCsvLine("stats.csv", String.format("%s;%s;%.2f;%.2f;%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
+
+        addCsvLine("stats.csv", String.format(Locale.US, "\"%s\",\"%s\",%.2f,%.2f,%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
       }
 
       System.out.println("\nRésultats détaillés K-Manhattan:");
@@ -283,8 +284,8 @@ public final class Experiment {
 
         double averageTreatmentsGain = treatmentsPercentageGain / djikstraResults.size();
         System.out.printf("Gain moyen: %.2f\n", averageTreatmentsGain);
-
-        addCsvLine("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
+        
+        addCsvLine("k_manhattan_stats.csv", String.format(Locale.US, "\"%s\",%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f", p.description(), k,
                 optimalResultsPercentage, minErrorTreatments, maxErrorTreatments, errorMeanTreatments, minErrorLength, maxErrorLength, errorMeanLength, averageTreatmentsGain));
       }
     }

@@ -1,0 +1,25 @@
+"Experiment name","Heuristic","Average length","Average treatment","Average Treatment Percentage Decrease"
+"Relief très peu dense, labyrinthe très ouvert","DIJKSTRA",239.72,62800.28,0.00
+"Relief très peu dense, labyrinthe très ouvert","INFINITY_NORM",239.72,16840.84,73.18
+"Relief très peu dense, labyrinthe très ouvert","EUCLIDEAN_NORM",239.72,14667.31,76.64
+"Relief très peu dense, labyrinthe très ouvert","MANHATTAN",239.72,16440.69,73.82
+"Relief très peu dense, labyrinthe assez ouvert","DIJKSTRA",278.28,63280.07,0.00
+"Relief très peu dense, labyrinthe assez ouvert","INFINITY_NORM",278.28,19954.28,68.47
+"Relief très peu dense, labyrinthe assez ouvert","EUCLIDEAN_NORM",278.28,17778.78,71.90
+"Relief très peu dense, labyrinthe assez ouvert","MANHATTAN",278.28,19522.18,69.15
+"Relief très peu dense, labyrinthe peu ouvert","DIJKSTRA",997.04,72399.70,0.00
+"Relief très peu dense, labyrinthe peu ouvert","INFINITY_NORM",997.04,49327.94,31.87
+"Relief très peu dense, labyrinthe peu ouvert","EUCLIDEAN_NORM",997.04,47437.20,34.48
+"Relief très peu dense, labyrinthe peu ouvert","MANHATTAN",997.04,48471.02,33.05
+"Relief dense, labyrinthe moyennement ouvert","DIJKSTRA",453.16,79961.27,0.00
+"Relief dense, labyrinthe moyennement ouvert","INFINITY_NORM",453.08,56895.89,28.85
+"Relief dense, labyrinthe moyennement ouvert","EUCLIDEAN_NORM",453.12,55040.25,31.17
+"Relief dense, labyrinthe moyennement ouvert","MANHATTAN",453.02,56277.55,29.62
+"Relief très dense, labyrinthe moyennement ouvert","DIJKSTRA",417.72,68104.32,0.00
+"Relief très dense, labyrinthe moyennement ouvert","INFINITY_NORM",417.66,55354.02,18.72
+"Relief très dense, labyrinthe moyennement ouvert","EUCLIDEAN_NORM",417.66,54208.37,20.40
+"Relief très dense, labyrinthe moyennement ouvert","MANHATTAN",417.76,54866.53,19.44
+"Relief très dense et fortement pondéré, labyrinthe moyennement ouvert","DIJKSTRA",529.70,94872.29,0.00
+"Relief très dense et fortement pondéré, labyrinthe moyennement ouvert","INFINITY_NORM",529.98,86734.60,8.58
+"Relief très dense et fortement pondéré, labyrinthe moyennement ouvert","EUCLIDEAN_NORM",530.02,85860.47,9.50
+"Relief très dense et fortement pondéré, labyrinthe moyennement ouvert","MANHATTAN",530.04,86128.79,9.22
