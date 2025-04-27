@@ -106,9 +106,9 @@ public final class Experiment {
   }
 
   public static void main(String[] args) {
-    // TODO
     MazeGenerator mazeGenerator = new DfsGenerator();
-    RandomGenerator randomGenerator = new Random();
+    Random randomGenerator = new Random();
+    randomGenerator.setSeed(2012);
 
     try {
       Files.deleteIfExists(Paths.get("stats.csv"));
@@ -121,7 +121,7 @@ public final class Experiment {
     }
 
     for (Params p : PARAMS) {
-      System.out.println("\n\n\n NOUVELLE EXPERIENCE : " + p.description + "\n");
+      System.out.println("\n\n\nNOUVELLE EXPERIENCE : " + p.description + "\n");
 
       ArrayList<LinkedList<GridMazeSolver.Result>> results = new ArrayList<>();
       for (int i = 0; i < AStar.Heuristic.values().length - 1; ++i) {
@@ -147,7 +147,7 @@ public final class Experiment {
               }
               kManhattanResults.get(k).add(result);
 
-              //System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
+              System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
             }
           } else {
             AStar aStar = new AStar(heuristic);
@@ -155,7 +155,7 @@ public final class Experiment {
             GridMazeSolver.Result result = aStar.solve(generationResult.maze(), generationResult.weights(), SRC, DST, new BoolVertexLabelling(TOPOLOGY.nbVertices()));
             results.get(heuristic.ordinal()).add(result);
 
-            //System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
+            System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
           }
         }
       }
@@ -181,7 +181,7 @@ public final class Experiment {
         double averageTreatmentPercentageDecrease = (djikstraAverageTreatment - averageTreatment) / (djikstraAverageTreatment / 100);
         System.out.printf("Diminution en pourcentage du nombre moyen de sommets traités par rapport à Djikstra: %.2f\n", averageTreatmentPercentageDecrease);
 
-        ajouterLigneCsv("stats.csv", String.format("\"%s\",\"%s\",%.2f,%.2f,%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
+        ajouterLigneCsv("stats.csv", String.format(Locale.US, "\"%s\",\"%s\",%.2f,%.2f,%.2f", p.description(), heuristic, averageLength, averageTreatment, averageTreatmentPercentageDecrease));
       }
 
       System.out.println("\nRésultats détaillés K-Manhattan:");
@@ -241,7 +241,7 @@ public final class Experiment {
         double averageTreatmentsGain = treatmentsPercentageGain / djikstraResults.size();
         System.out.printf("Gain moyen: %.2f\n", averageTreatmentsGain);
 
-        ajouterLigneCsv("k_manhattan_stats.csv", String.format("\"%s\",%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f", p.description(), k,
+        ajouterLigneCsv("k_manhattan_stats.csv", String.format(Locale.US, "\"%s\",%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f", p.description(), k,
                 optimalResultsPercentage, minErrorTreatments, maxErrorTreatments, errorMeanTreatments, minErrorLength, maxErrorLength, errorMeanLength, averageTreatmentsGain));
       }
     }
