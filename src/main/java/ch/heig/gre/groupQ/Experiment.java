@@ -14,6 +14,8 @@ import ch.heig.gre.maze.impl.ShenaniganWeightFunction;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.random.RandomGenerator;
@@ -27,7 +29,7 @@ public final class Experiment {
   private static final int DST = 660600;
 
   /** Nombre de grilles à générer pour chaque expérience */
-  private static final int N = 3;
+  private static final int N = 100;
 
   /** Topologie de la grille */
   private static final GridGraph2D TOPOLOGY;
@@ -82,15 +84,13 @@ public final class Experiment {
   public static void writeCsvHeaders(String filename, String... headers) {
     try (FileWriter fileWriter = new FileWriter(filename, true);
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
-      StringBuilder sb = new StringBuilder();
       for (int i = 0; i < headers.length; i++) {
         if (i > 0) {
-          sb.append(" ; ");
+          printWriter.print(" ; ");
         }
-        sb.append(headers[i]);
+        printWriter.print(headers[i]);
       }
-      sb.append('\n');
-      printWriter.printf(sb.toString());
+      printWriter.print('\n');
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -99,7 +99,7 @@ public final class Experiment {
   public static void ajouterLigneCsv(String filename, String line) {
     try (FileWriter fileWriter = new FileWriter(filename, true);
          PrintWriter printWriter = new PrintWriter(fileWriter)) {
-      printWriter.printf(line + "\n");
+      printWriter.println(line);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -110,13 +110,24 @@ public final class Experiment {
     MazeGenerator mazeGenerator = new DfsGenerator();
     RandomGenerator randomGenerator = new Random();
 
-    writeCsvHeaders("stats.csv", "Experiment name", "Heuristic", "Average length", "Average treatment", "Average Treatment Percentage Decrease");
-    writeCsvHeaders("k_manhattan_stats.csv", "Experiment name", "Kvalue", "Optimal solution percentage", "Min error", "Max error", "Mean error", "Gain moyen");
+    try {
+      Files.deleteIfExists(Paths.get("stats.csv"));
+      writeCsvHeaders("stats.csv", "Experiment name", "Heuristic", "Average length", "Average treatment", "Average Treatment Percentage Decrease");
+
+      Files.deleteIfExists(Paths.get("k_manhattan_stats.csv"));
+      writeCsvHeaders("k_manhattan_stats.csv", "Experiment name", "Kvalue", "Optimal solution percentage", "Min error treatments", "Max error treatments", "Mean error treatments", "Min error length", "Max error length", "Mean error length", "Gain moyen");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     for (Params p : PARAMS) {
-      System.out.println(p.description + "\n");
+      System.out.println("\n\n\n NOUVELLE EXPERIENCE : " + p.description + "\n");
 
-      ArrayList<LinkedList<GridMazeSolver.Result>> results = new ArrayList<>(Collections.nCopies(AStar.Heuristic.values().length, new LinkedList<>()));
+      ArrayList<LinkedList<GridMazeSolver.Result>> results = new ArrayList<>();
+      for (int i = 0; i < AStar.Heuristic.values().length - 1; ++i) {
+        results.add(new LinkedList<>());
+      }
+
       Map<Integer, LinkedList<GridMazeSolver.Result>> kManhattanResults = new HashMap<>();
 
       for (int i = 0; i < N; ++i) {
@@ -136,7 +147,7 @@ public final class Experiment {
               }
               kManhattanResults.get(k).add(result);
 
-              System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
+              //System.out.println(heuristic.name() + " [" + k + "]: " + result.treatments() + " / " + result.length());
             }
           } else {
             AStar aStar = new AStar(heuristic);
@@ -144,7 +155,7 @@ public final class Experiment {
             GridMazeSolver.Result result = aStar.solve(generationResult.maze(), generationResult.weights(), SRC, DST, new BoolVertexLabelling(TOPOLOGY.nbVertices()));
             results.get(heuristic.ordinal()).add(result);
 
-            System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
+            //System.out.println(heuristic.name() + ": " + result.treatments() + " / " + result.length());
           }
         }
       }
@@ -180,10 +191,13 @@ public final class Experiment {
 
         List<GridMazeSolver.Result> kKManhattanResults = kManhattanResults.get(k);
 
-        double minError = Double.MAX_VALUE;
-        double maxError = Double.MIN_VALUE;
-        double errorSum = 0;
-        int treatmentsPercentageGain = 0;
+        double minErrorTreatments = Double.MAX_VALUE;
+        double maxErrorTreatments = Double.MIN_VALUE;
+        double errorSumTreatments = 0;
+        double minErrorLength = Double.MAX_VALUE;
+        double maxErrorLength = Double.MIN_VALUE;
+        double errorSumLength = 0;
+        double treatmentsPercentageGain = 0;
         int optimalResults = 0;
         for (int i = 0; i < kKManhattanResults.size(); ++i) {
           GridMazeSolver.Result kKManhattanResult = kKManhattanResults.get(i);
@@ -192,30 +206,43 @@ public final class Experiment {
             ++optimalResults;
           }
 
-          treatmentsPercentageGain += (djikstraResult.treatments() - kKManhattanResult.treatments()) / djikstraResult.treatments() * 100;
+          treatmentsPercentageGain += (double) (djikstraResult.treatments() - kKManhattanResult.treatments()) / djikstraResult.treatments() * 100;
 
-          double relativeError = (double) (kKManhattanResult.treatments() - djikstraResult.treatments()) / djikstraResult.treatments() * 100;
-          errorSum += relativeError;
+          double relativeErrorTreatments = (double) (kKManhattanResult.treatments() - djikstraResult.treatments()) / djikstraResult.treatments() * 100;
+          errorSumTreatments += relativeErrorTreatments;
 
-          minError = Math.min(minError, relativeError);
-          maxError = Math.max(maxError, relativeError);
+          minErrorTreatments = Math.min(minErrorTreatments, relativeErrorTreatments);
+          maxErrorTreatments = Math.max(maxErrorTreatments, relativeErrorTreatments);
+
+          double relativeErrorLength = (double) (kKManhattanResult.length() - djikstraResult.length()) / djikstraResult.length() * 100;
+          errorSumLength += relativeErrorLength;
+
+          minErrorLength = Math.min(minErrorLength, relativeErrorLength);
+          maxErrorLength = Math.max(maxErrorLength, relativeErrorLength);
         }
 
         double optimalResultsPercentage = (double) optimalResults / djikstraResults.size() * 100;
         System.out.printf("Pourcentage de solutions optimales: %.2f\n", optimalResultsPercentage);
 
-        System.out.printf("Erreur relative minimale: %.2f\n", minError);
+        System.out.printf("Nombre de sommets traités erreur relative minimale: %.2f\n", minErrorTreatments);
 
-        System.out.printf("Erreur relative maximale: %.2f\n", maxError);
+        System.out.printf("Nombre de sommets traités erreur relative maximale: %.2f\n", maxErrorTreatments);
 
-        double errorMean = errorSum / djikstraResults.size();
-        System.out.printf("Erreur relative moyenne: %.2f\n", errorMean);
+        double errorMeanTreatments = errorSumTreatments / djikstraResults.size();
+        System.out.printf("Nombre de sommets traités erreur relative moyenne: %.2f\n", errorMeanTreatments);
 
-        double treatmentsGainMean = (double) treatmentsPercentageGain / djikstraResults.size();
-        System.out.printf("Gain moyen: %.2f\n", treatmentsGainMean);
+        System.out.printf("Longueur du chemin trouvé erreur relative minimale: %.2f\n", minErrorLength);
 
-        ajouterLigneCsv("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
-                optimalResultsPercentage, minError, maxError, errorMean, treatmentsGainMean));
+        System.out.printf("Longueur du chemin trouvé erreur relative maximale: %.2f\n", maxErrorLength);
+
+        double errorMeanLength = errorSumLength / djikstraResults.size();
+        System.out.printf("Longueur du chemin trouvé erreur relative moyenne: %.2f\n", errorMeanLength);
+
+        double averageTreatmentsGain = treatmentsPercentageGain / djikstraResults.size();
+        System.out.printf("Gain moyen: %.2f\n", averageTreatmentsGain);
+
+        ajouterLigneCsv("k_manhattan_stats.csv", String.format("%s;%d;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f;%.2f", p.description(), k,
+                optimalResultsPercentage, minErrorTreatments, maxErrorTreatments, errorMeanTreatments, minErrorLength, maxErrorLength, errorMeanLength, averageTreatmentsGain));
       }
     }
   }
